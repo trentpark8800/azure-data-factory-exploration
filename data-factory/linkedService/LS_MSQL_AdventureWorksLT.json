@@ -1,0 +1,16 @@
+{
+	"name": "LS_MSQL_AdventureWorksLT",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"connectionString": "integrated security=False;data source=40.118.226.190;initial catalog=AdventureWorksLT;user id=trentpark",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI3ZGU0NDg1NC0xYzhmLTQ4OTEtYThhYS1iNTc4MGZmZDJkYWIiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "SelfHostedIntegrationRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
