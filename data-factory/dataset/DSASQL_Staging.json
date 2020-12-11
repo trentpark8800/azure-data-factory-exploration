@@ -18,6 +18,7 @@
 		"type": "AzureSqlTable",
 		"schema": [],
 		"typeProperties": {
+			"schema": "Staging",
 			"table": {
 				"value": "@dataset().TableName",
 				"type": "Expression"
