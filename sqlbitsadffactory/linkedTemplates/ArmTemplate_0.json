@@ -69,6 +69,133 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DS_ASQL_SalesLT_Customer')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_ASQL_Staging",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "CustomerID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "NameStyle",
+						"type": "bit"
+					},
+					{
+						"name": "Title",
+						"type": "nvarchar"
+					},
+					{
+						"name": "FirstName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "MiddleName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "LastName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Suffix",
+						"type": "nvarchar"
+					},
+					{
+						"name": "CompanyName",
+						"type": "nvarchar"
+					},
+					{
+						"name": "SalesPerson",
+						"type": "nvarchar"
+					},
+					{
+						"name": "EmailAddress",
+						"type": "nvarchar"
+					},
+					{
+						"name": "Phone",
+						"type": "nvarchar"
+					},
+					{
+						"name": "PasswordHash",
+						"type": "varchar"
+					},
+					{
+						"name": "PasswordSalt",
+						"type": "varchar"
+					},
+					{
+						"name": "rowguid",
+						"type": "nvarchar"
+					},
+					{
+						"name": "ModifiedDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					},
+					{
+						"name": "ChangeHashKey",
+						"type": "nchar"
+					},
+					{
+						"name": "CreateBatchId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "CreateDateTime",
+						"type": "datetime2",
+						"scale": 3
+					},
+					{
+						"name": "UpdateBatchId",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "UpdateDateTime",
+						"type": "datetime2",
+						"scale": 3
+					},
+					{
+						"name": "SYS_CHANGE_VERSION",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "SYS_CHANGE_CREATION_VERSION",
+						"type": "bigint",
+						"precision": 19
+					},
+					{
+						"name": "SYS_CHANGE_OPERATION",
+						"type": "nchar"
+					},
+					{
+						"name": "SYS_CHANGE_CONTEXT",
+						"type": "varbinary"
+					}
+				],
+				"typeProperties": {
+					"schema": "AWLTSRC",
+					"table": "SalesLT_Customer"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_ASQL_Staging')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/LS_MSQL_AdventureWorksLT')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -170,6 +297,70 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/LS_MSQL_AdventureWorksLT')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Copy_SalesLT_Customer')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CopyFromMSSQLtoASQL",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "SqlServerSource",
+								"sqlReaderQuery": "SELECT CustomerID, NameStyle, Title, FirstName, MiddleName, LastName, Suffix,\nCompanyName, SalesPerson, EmailAddress, Phone, PasswordHash, PasswordSalt,\nCAST(rowguid as NVARCHAR(50)) AS rowguid, ModifiedDate FROM SalesLT.Customer",
+								"queryTimeout": "02:00:00",
+								"partitionOption": "None"
+							},
+							"sink": {
+								"type": "AzureSqlSink",
+								"writeBatchSize": 99998,
+								"preCopyScript": "TRUNCATE TABLE [AWLTSRC].[SalesLT_Customer]\n",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_MSQL_SalesLT_Customer",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_ASQL_SalesLT_Customer",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DS_MSQL_SalesLT_Customer')]",
+				"[concat(variables('factoryId'), '/datasets/DS_ASQL_SalesLT_Customer')]"
 			]
 		}
 	]
