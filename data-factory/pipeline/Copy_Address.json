@@ -26,7 +26,12 @@
 						}
 					},
 					"sink": {
-						"type": "AzureSqlSink"
+						"type": "AzureSqlSink",
+						"preCopyScript": {
+							"value": "@{pipeline().parameters.SinkPreCopyScript}",
+							"type": "Expression"
+						},
+						"disableMetricsCollection": false
 					},
 					"enableStaging": false
 				},
@@ -41,12 +46,25 @@
 						"referenceName": "DSASQL_Staging",
 						"type": "DatasetReference",
 						"parameters": {
-							"TableName": "dbo.TableName"
+							"TableName": {
+								"value": "@pipeline().parameters.SInkTableName",
+								"type": "Expression"
+							}
 						}
 					}
 				]
 			}
 		],
+		"parameters": {
+			"SInkTableName": {
+				"type": "String",
+				"defaultValue": "AWLTSRC.SalesLT_Address"
+			},
+			"SinkPreCopyScript": {
+				"type": "String",
+				"defaultValue": "TRUNCATE TABLE AWLTSRC.SalesLT_Address"
+			}
+		},
 		"folder": {
 			"name": "Lab02"
 		},
