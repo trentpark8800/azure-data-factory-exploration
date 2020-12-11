@@ -11,6 +11,9 @@
 				"defaultValue": "dbo.TableName"
 			}
 		},
+		"folder": {
+			"name": "Generic Datasets"
+		},
 		"annotations": [],
 		"type": "AzureSqlTable",
 		"schema": [],
