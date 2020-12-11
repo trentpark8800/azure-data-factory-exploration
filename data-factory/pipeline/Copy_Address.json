@@ -1,6 +1,52 @@
 {
 	"name": "Copy_Address",
 	"properties": {
+		"activities": [
+			{
+				"name": "CopyAddress",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink"
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_ADLS_Address",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DSASQL_Staging",
+						"type": "DatasetReference",
+						"parameters": {
+							"TableName": "dbo.TableName"
+						}
+					}
+				]
+			}
+		],
 		"folder": {
 			"name": "Lab02"
 		},
