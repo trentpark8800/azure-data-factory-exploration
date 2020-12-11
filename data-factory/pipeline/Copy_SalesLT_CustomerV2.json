@@ -17,14 +17,20 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
-						"sqlReaderQuery": "SELECT CustomerID, NameStyle, Title, FirstName, MiddleName, LastName, Suffix,\nCompanyName, SalesPerson, EmailAddress, Phone, PasswordHash, PasswordSalt,\nCAST(rowguid as NVARCHAR(50)) AS rowguid, ModifiedDate FROM SalesLT.Customer",
+						"sqlReaderQuery": {
+							"value": "@pipeline().parameters.SourceQuery",
+							"type": "Expression"
+						},
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
 					"sink": {
 						"type": "AzureSqlSink",
 						"writeBatchSize": 99998,
-						"preCopyScript": "TRUNCATE TABLE [AWLTSRC].[SalesLT_Customer]\n",
+						"preCopyScript": {
+							"value": "@{pipeline().parameters.SinkPreCopyScript}",
+							"type": "Expression"
+						},
 						"disableMetricsCollection": false
 					},
 					"enableStaging": false,
@@ -55,6 +61,10 @@
 			"SourceQuery": {
 				"type": "string",
 				"defaultValue": "SELECT CustomerID, NameStyle, Title, FirstName, MiddleName, LastName, Suffix, CompanyName, SalesPerson, EmailAddress, Phone, PasswordHash, PasswordSalt, CAST(rowguid as NVARCHAR(50)) AS rowguid, ModifiedDate FROM SalesLT.Customer"
+			},
+			"SinkPreCopyScript": {
+				"type": "String",
+				"defaultValue": "TRUNCATE TABLE [AWLTSRC].[SalesLT_Customer]"
 			}
 		},
 		"folder": {
